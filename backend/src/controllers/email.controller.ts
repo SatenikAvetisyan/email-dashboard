@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { Types } from "mongoose";
 import { fetchLatest } from "../services/imap.service.js";
-import { listEmails } from "../services/email.service.js";
+import { listEmails, getEmailById } from "../services/email.service.js";
 import { Email } from "../models/Email.js";
 
 /**
@@ -35,5 +35,16 @@ export async function search(req: any, res: Response) {
   } catch (e) {
     console.error("email search error:", e);
     res.status(500).json({ error: "Error searching emails" });
+  }
+}
+export async function detail(req: any, res: Response) {
+  try {
+    const { id } = req.params;
+    const email = await getEmailById(id, req.user.id);
+    if (!email) return res.status(404).json({ error: "Email not found" });
+    res.json(email);
+  } catch (e) {
+    console.error("email detail error:", e);
+    res.status(500).json({ error: "Error getting email detail" });
   }
 }
