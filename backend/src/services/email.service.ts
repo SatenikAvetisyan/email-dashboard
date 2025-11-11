@@ -1,4 +1,5 @@
 import { Email } from "../models/Email.js";
+import { Types } from "mongoose";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -37,4 +38,9 @@ export async function listEmails(
     limit: safeLimit,
     q: q || ""
   };
+}
+
+export async function getEmailById(emailId: string, userId: string) {
+    if (!Types.ObjectId.isValid(emailId)) return null;
+    return Email.findOne({ _id: emailId, userId }).lean();
 }
