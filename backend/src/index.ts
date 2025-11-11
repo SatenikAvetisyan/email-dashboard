@@ -1,7 +1,7 @@
 import http from "http";
 import { app } from "./app.js";
 import { config } from "./config.js";
-import { connectDB } from "./db.ts";
+import { connectDB } from "./db.js";
 
 (async () => {
   await connectDB(config.mongoUri);

@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import { config } from "./config";
-import api from "./routes/index.ts";
+import { config } from "./config.js";
+import api from "./routes/index.js";
 
 export const app = express();
 app.use(cors({ origin: config.clientOrigin }));
