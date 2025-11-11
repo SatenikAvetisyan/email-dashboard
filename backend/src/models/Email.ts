@@ -2,14 +2,14 @@ import { Schema, model, Types } from "mongoose";
 
 export interface IEmail {
   userId: Types.ObjectId;
-  messageId: string;     // UID/Message-ID del servidor
+  messageId: string;
   subject: string;
   from: string;
   to: string[];
   date: Date;
   snippet: string;
-  folder: string;        // INBOX, etc.
-  flags: string[];       // Seen, Answered, etc.
+  folder: string;
+  flags: string[];
   aiSummary?: string;
   aiKeywords?: string[];
 }
@@ -28,7 +28,13 @@ const schema = new Schema<IEmail>({
   aiKeywords: [String]
 }, { timestamps: true });
 
+// Orden por fecha dentro de cada usuario
 schema.index({ userId: 1, date: -1 });
-schema.index({ userId: 1, subject: "text" });
+
+// Índice de texto para búsqueda por asunto, remitente y snippet
+schema.index(
+  { subject: "text", from: "text", snippet: "text" },
+  { weights: { subject: 5, from: 3, snippet: 1 }, name: "EmailTextIndex" }
+);
 
 export const Email = model<IEmail>("Email", schema);
