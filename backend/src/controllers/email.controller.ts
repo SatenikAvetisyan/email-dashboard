@@ -1,25 +1,39 @@
 import { Response } from "express";
 import { Types } from "mongoose";
 import { fetchLatest } from "../services/imap.service.js";
+import { listEmails } from "../services/email.service.js";
 import { Email } from "../models/Email.js";
 
+/**
+ * POST /api/emails/sync
+ * Sincroniza los últimos N correos desde IMAP a MongoDB
+ */
 export async function syncInbox(req: any, res: Response) {
-  const userId = new Types.ObjectId(req.user.id);
-  const limit = Number(req.query.limit || 20);
-  const docs = await fetchLatest(userId, limit);
-  res.json({ synced: docs.length });
+  try {
+    const userId = new Types.ObjectId(req.user.id);
+    const limit = Number(req.query.limit || 20);
+
+    const docs = await fetchLatest(userId, limit);
+    res.json({ synced: docs.length });
+  } catch (e) {
+    console.error("syncInbox error:", e);
+    res.status(500).json({ error: "Error syncing inbox" });
+  }
 }
 
-// (Se añadirán más handlers en otras ramas: list/search/detail/summarize)
-export async function listEmails(req: any, res: Response) {
-  const page = Number(req.query.page || 1);
-  const limit = Number(req.query.limit || 20);
-  const skip = (page - 1) * limit;
+/**
+ * GET /api/emails?q=&page=&limit=
+ * Búsqueda + paginación con índice de texto
+ */
+export async function search(req: any, res: Response) {
+  try {
+    const { q, page = 1, limit = 20 } = req.query as any;
 
-  const [items, total] = await Promise.all([
-    Email.find({ userId: req.user.id }).sort({ date: -1 }).skip(skip).limit(limit),
-    Email.countDocuments({ userId: req.user.id })
-  ]);
+    const result = await listEmails(req.user.id, q, Number(page), Number(limit));
 
-  res.json({ items, total, page, pages: Math.ceil(total / limit) });
+    res.json(result);
+  } catch (e) {
+    console.error("email search error:", e);
+    res.status(500).json({ error: "Error searching emails" });
+  }
 }
