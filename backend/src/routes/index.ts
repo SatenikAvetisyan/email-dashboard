@@ -1,7 +1,7 @@
 import { Router } from "express";
+import authRoutes from "./auth.routes.js";
 
 const api = Router();
-// (las rutas reales se añaden en ramas siguientes)
-api.get("/", (_req, res) => res.json({ api: "ok" }));
+api.use("/auth", authRoutes);
 
 export default api;
