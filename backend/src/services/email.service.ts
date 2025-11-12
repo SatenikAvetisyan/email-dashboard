@@ -1,4 +1,5 @@
 import { Email } from "../models/Email.js";
+import { summarizeEmail } from "./ai.service.js";
 import { Types } from "mongoose";
 
 function clamp(n: number, min: number, max: number) {
@@ -44,3 +45,19 @@ export async function getEmailById(emailId: string, userId: string) {
     if (!Types.ObjectId.isValid(emailId)) return null;
     return Email.findOne({ _id: emailId, userId }).lean();
 }
+
+export async function runAISummary(emailId: string, userId: string) {
+    if (!Types.ObjectId.isValid(emailId)) throw new Error("Invalid email id");
+  
+    const email = await Email.findOne({ _id: emailId, userId });
+    if (!email) return null;
+  
+    const base = email.text || email.html || email.snippet || email.subject || "";
+    const { summary, keywords } = await summarizeEmail(base);
+  
+    email.aiSummary = summary;
+    email.aiKeywords = keywords;
+    await email.save();
+  
+    return { id: email.id, aiSummary: summary, aiKeywords: keywords };
+  }

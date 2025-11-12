@@ -8,6 +8,8 @@ export interface IEmail {
   to: string[];
   date: Date;
   snippet: string;
+  text: string;
+  html: string;
   folder: string;
   flags: string[];
   aiSummary?: string;
@@ -22,6 +24,8 @@ const schema = new Schema<IEmail>({
   to: [String],
   date: Date,
   snippet: String,
+  text: String,
+  html: String,
   folder: { type: String, default: "INBOX" },
   flags: { type: [String], default: [] },
   aiSummary: String,
