@@ -1,10 +1,10 @@
 import http from "http";
-import { app } from "./app.js";
-import { config } from "./config.js";
-import { connectDB } from "./db.js";
-import { connectIMAP } from "./services/imap.service.js";
-import { Email } from "./models/Email.js";
-import { createWSServer } from "./websocket.js";
+import { app } from "./app";
+import { config } from "./config";
+import { connectDB } from "./db";
+import { connectIMAP } from "./services/imap.service";
+import { Email } from "./models/Email";
+import { createWSServer } from "./websocket";
 
 (async () => {
   await connectDB(config.mongoUri);

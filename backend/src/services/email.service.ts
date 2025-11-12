@@ -1,7 +1,7 @@
-import { Email } from "../models/Email.js";
-import { summarizeEmail } from "./ai.service.js";
+import { Email } from "../models/Email";
+import { summarizeEmail } from "./ai.service";
 import { Types } from "mongoose";
-import { broadcastToUser } from "../websocket.js";
+import { broadcastToUser } from "../websocket";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import authRoutes from "./auth.routes.js";
-import emailRoutes from "./email.routes.js";
+import authRoutes from "./auth.routes";
+import emailRoutes from "./email.routes";
 
 const api = Router();
 api.use("/auth", authRoutes);

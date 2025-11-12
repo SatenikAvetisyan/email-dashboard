@@ -1,8 +1,7 @@
 import { Response } from "express";
 import { Types } from "mongoose";
-import { fetchLatest } from "../services/imap.service.js";
-import { listEmails, getEmailById, runAISummary, updateFlag } from "../services/email.service.js";
-import { Email } from "../models/Email.js";
+import { fetchLatest } from "../services/imap.service";
+import { listEmails, getEmailById, runAISummary, updateFlag } from "../services/email.service";
 
 /**
  * POST /api/emails/sync

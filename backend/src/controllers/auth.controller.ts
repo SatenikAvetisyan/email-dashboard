@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { User } from "../models/User.js";
-import { config } from "../config.js";
+import { User } from "../models/User";
+import { config } from "../config";
 
 export async function register(req: Request, res: Response) {
   const { email, password } = req.body;
