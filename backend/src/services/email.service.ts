@@ -59,6 +59,11 @@ export async function runAISummary(emailId: string, userId: string) {
     email.aiSummary = summary;
     email.aiKeywords = keywords;
     await email.save();
+
+    broadcastToUser(userId, {
+        type: "email_flag_updated",
+        payload: { id: email.id, flags: email.flags }
+      });
   
     return { id: email.id, aiSummary: summary, aiKeywords: keywords };
 }
