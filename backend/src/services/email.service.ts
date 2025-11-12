@@ -60,4 +60,26 @@ export async function runAISummary(emailId: string, userId: string) {
     await email.save();
   
     return { id: email.id, aiSummary: summary, aiKeywords: keywords };
-  }
+}
+
+const ALLOWED_FLAGS = new Set(["Seen", "Flagged"]);
+
+export async function updateFlag(
+  emailId: string,
+  userId: string,
+  flag: string,
+  value: boolean
+) {
+  if (!Types.ObjectId.isValid(emailId)) throw new Error("Invalid email id");
+  if (!ALLOWED_FLAGS.has(flag)) throw new Error("Unsupported flag");
+
+  const email = await Email.findOne({ _id: emailId, userId });
+  if (!email) return null;
+
+  const flags = new Set(email.flags || []);
+  value ? flags.add(flag) : flags.delete(flag);
+  email.flags = Array.from(flags);
+  await email.save();
+
+  return { id: email.id, flags: email.flags };
+}
