@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { Types } from "mongoose";
 import { fetchLatest } from "../services/imap.service.js";
-import { listEmails, getEmailById } from "../services/email.service.js";
+import { listEmails, getEmailById, runAISummary } from "../services/email.service.js";
 import { Email } from "../models/Email.js";
 
 /**
@@ -46,5 +46,17 @@ export async function detail(req: any, res: Response) {
   } catch (e) {
     console.error("email detail error:", e);
     res.status(500).json({ error: "Error getting email detail" });
+  }
+}
+
+export async function summarize(req: any, res: Response) {
+  try {
+    const { id } = req.params;
+    const result = await runAISummary(id, req.user.id);
+    if (!result) return res.status(404).json({ error: "Email not found" });
+    res.json(result);
+  } catch (e) {
+    console.error("email summarize error:", e);
+    res.status(500).json({ error: "Error summarizing email" });
   }
 }
