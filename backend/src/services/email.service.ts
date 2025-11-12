@@ -1,6 +1,7 @@
 import { Email } from "../models/Email.js";
 import { summarizeEmail } from "./ai.service.js";
 import { Types } from "mongoose";
+import { broadcastToUser } from "../websocket.js";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -58,6 +59,11 @@ export async function runAISummary(emailId: string, userId: string) {
     email.aiSummary = summary;
     email.aiKeywords = keywords;
     await email.save();
+
+    broadcastToUser(userId, {
+        type: "email_flag_updated",
+        payload: { id: email.id, flags: email.flags }
+      });
   
     return { id: email.id, aiSummary: summary, aiKeywords: keywords };
 }
@@ -65,21 +71,27 @@ export async function runAISummary(emailId: string, userId: string) {
 const ALLOWED_FLAGS = new Set(["Seen", "Flagged"]);
 
 export async function updateFlag(
-  emailId: string,
-  userId: string,
-  flag: string,
-  value: boolean
-) {
-  if (!Types.ObjectId.isValid(emailId)) throw new Error("Invalid email id");
-  if (!ALLOWED_FLAGS.has(flag)) throw new Error("Unsupported flag");
-
-  const email = await Email.findOne({ _id: emailId, userId });
-  if (!email) return null;
-
-  const flags = new Set(email.flags || []);
-  value ? flags.add(flag) : flags.delete(flag);
-  email.flags = Array.from(flags);
-  await email.save();
-
-  return { id: email.id, flags: email.flags };
-}
+    emailId: string,
+    userId: string,
+    flag: string,
+    value: boolean
+  ) {
+    if (!Types.ObjectId.isValid(emailId)) throw new Error("Invalid email id");
+    if (!ALLOWED_FLAGS.has(flag)) throw new Error("Unsupported flag");
+  
+    const email = await Email.findOne({ _id: emailId, userId });
+    if (!email) return null;
+  
+    const flags = new Set(email.flags || []);
+    value ? flags.add(flag) : flags.delete(flag);
+    email.flags = Array.from(flags);
+    await email.save();
+  
+    // Emitimos evento
+    broadcastToUser(userId, {
+      type: "email_flag_updated",
+      payload: { id: email.id, flags: email.flags }
+    });
+  
+    return { id: email.id, flags: email.flags };
+  }

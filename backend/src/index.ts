@@ -4,6 +4,7 @@ import { config } from "./config.js";
 import { connectDB } from "./db.js";
 import { connectIMAP } from "./services/imap.service.js";
 import { Email } from "./models/Email.js";
+import { createWSServer } from "./websocket.js";
 
 (async () => {
   await connectDB(config.mongoUri);
@@ -23,6 +24,8 @@ import { Email } from "./models/Email.js";
   }
 
   const server = http.createServer(app);
+  createWSServer(server);
+  
   server.listen(config.port, () =>
     console.log(`✅ API http://localhost:${config.port}`)
   );
