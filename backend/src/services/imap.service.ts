@@ -1,8 +1,8 @@
 import { ImapFlow } from "imapflow";
-import { config } from "../config.js";
-import { Email } from "../models/Email.js";
+import { config } from "../config";
+import { Email } from "../models/Email";
 import { Types } from "mongoose";
-import { broadcastToUser } from "../websocket.js";
+import { broadcastToUser } from "../websocket";
 
 let client: ImapFlow | null = null;
 

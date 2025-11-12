@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { auth } from "../middleware/auth.js";
-import { syncInbox, search, detail, summarize, setFlag } from "../controllers/email.controller.js";
+import { auth } from "../middleware/auth";
+import { syncInbox, search, detail, summarize, setFlag } from "../controllers/email.controller";
 
 const r = Router();
 

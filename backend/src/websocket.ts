@@ -1,6 +1,6 @@
 import { WebSocketServer, WebSocket } from "ws";
 import jwt from "jsonwebtoken";
-import { config } from "./config.js";
+import { config } from "./config";
 
 type UserId = string;
 type Client = WebSocket;
