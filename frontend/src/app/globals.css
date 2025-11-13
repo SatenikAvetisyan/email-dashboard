@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* small base styles */
-html, body, #__next { height: 100%; }
-body { @apply bg-slate-50 text-slate-800 antialiased; }
+html, body {
+  height: 100%;
+  background-color: #f8fafc;
+  color: #1e293b;
+  font-family: system-ui, sans-serif;
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+}
