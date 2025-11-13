@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthState { token: string | null; email?: string | null }
-const initial: AuthState = { token: typeof window !== "undefined" ? (localStorage.getItem("token") || null) : null };
+const initial: AuthState = { token: null };
 
 const slice = createSlice({
   name: "auth",
